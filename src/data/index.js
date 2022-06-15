@@ -1,5 +1,5 @@
 const elastic = require("../elastic");
-const quotes = "./quotes.json";
+const quotes = "quotes.json";
 
 const esAction = {
     index: {

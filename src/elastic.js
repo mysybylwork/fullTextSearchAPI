@@ -1,17 +1,35 @@
 const { Client } = require('@elastic/elasticsearch');
 require('dotenv').config();
 
-const elasticUrl = process.env.ELASTIC_URL ||"http://localhost:9200"
+const elasticUrl ="http://127.0.0.1:9200"
 const esclient = new Client({ node: elasticUrl});
 const index = "quotes";
 const type = "quotes";
+
+// option 2 
+var elasticsearch = require('elasticsearch');
+var client = new elasticsearch.Client({
+    hosts:[elasticUrl]
+});
+
+
+client.ping({
+    requestTimeout: 30000,
+
+}, function(error){
+    if (error){
+        console.log(`Cannot connect to Elastic search : ${error}`);
+    } else {
+        console.log('Connected to Elasticsearch was successful!');
+    }
+})
 
 async function createIndex(index) {
     try{
         await esclient.indices.create({ index });
         console.log(`Created index ${index}`)
     } catch (err){
-        console.error(`An error occurred jwhile creating the index ${index}:`);
+        console.error(`An error occurred while creating the index ${index}:`);
         console.error(err)
 
     }
@@ -49,19 +67,20 @@ async function setQuotesMapping () {
 
 function checkConnection() {
     return new Promise(async (resolve) => {
-        console.log("Checking connection to ElasticSearch...");
-        let isConnected = false;
-        while (!isConnected){
-            try {
-                await esclient.cluster.health({});
-                console.log("Successfully connected to ElasticSearch");
-                isConnected = true;
-            } catch (_){
-            }        
+      console.log("Checking connection to ElasticSearch...");
+      let isConnected = false;
+      while (!isConnected) {
+        try {
+          await esclient.cluster.health({});
+          console.log("Successfully connected to ElasticSearch");
+          isConnected = true;
+        // eslint-disable-next-line no-empty
+        } catch (_) {
         }
-        resolve(true);
+      }
+      resolve(true);
     });
-}
+  }
 
 module.exports = {
     esclient,

@@ -22,7 +22,7 @@ services:
       - esnet
   elasticsearch:
     container_name: tqd-elasticsearch
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.2.2
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.4.0
     volumes:
       - esdata:/usr/share/elasticsearch/data
     environment:
@@ -30,7 +30,7 @@ services:
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - discovery.type=single-node
     logging:
-      driver: none
+      driver: json-file
     ports:
       - 9300:9300
       - 9200:9200
